@@ -4,16 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\HomeController;
-
-
-Route::get('/', function(){ return view('welcome'); });
-
-Route::controller(RegisterController::class)->group(function(){
-    Route::prefix('register')->group(function(){
-        Route::get('/', 'index')->name('register');
-        Route::post('create', 'registration')->name('register-create');
-    });
-});
+use App\Http\Controllers\LocationController;
 
 Route::controller(loginController::class)->group(function(){
     Route::prefix('login')->group(function(){
@@ -21,10 +12,35 @@ Route::controller(loginController::class)->group(function(){
         Route::post('auth', 'authenticate')->name('login-auth');
     });
     
-    Route::post('logout', 'logout')->name('logout');
+    Route::get('logout', 'logout')->name('logout');
+});
+
+// All Auth
+Route::middleware(['auth'])->group(function(){    
+    Route::controller(HomeController::class)->group(function(){        
+        Route::get('/', 'index');
+        Route::get('home', 'index')->name('home');
+    });   
+});
+
+// Admin Auth
+Route::middleware(['auth','user-access:admin'])->group(function(){    
+    Route::prefix('admin')->group(function(){
+        Route::controller(LocationController::class)->group(function(){
+            Route::prefix('location')->group(function(){
+                Route::get('/', 'index');
+                Route::get('all', 'get_all');
+                Route::post('setup', 'set_location');
+            });
+        }); 
+
+        Route::controller(RegisterController::class)->group(function(){
+            Route::prefix('register')->group(function(){
+                Route::get('/', 'index')->name('register');
+                Route::post('create', 'registration')->name('register-create');
+            });
+        });
+    }); 
 });
 
 
-Route::controller(HomeController::class)->group(function(){
-    Route::get('/home', 'index')->name('home');
-});

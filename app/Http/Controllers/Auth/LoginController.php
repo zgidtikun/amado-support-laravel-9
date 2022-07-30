@@ -32,6 +32,9 @@ class LoginController extends Controller
         if(Auth::attempt($credentials)){
             return redirect()->intended('home');
         }
+        else 
+            return redirect()->back()
+                ->with('loginFail', 'Username Or Password Are Wrong.');
 
     }
 

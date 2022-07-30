@@ -1,0 +1,116 @@
+$color-body: #000000;
+$color-amado: #ef3a47;
+$color-amado-blue: #131e8a;
+$graylte-color: #a7aeb8;
+$pink-color: #FF416C;
+
+html, body {
+    height: 100%;
+    font-family: 'Sarabun', sans-serif;
+    color: $color-body;
+}
+
+.logo-nav {
+    height: 40px;
+}
+
+.logo-login {
+    height: 100px;
+}
+
+.logo-report {
+    height: 55px;
+}
+
+.bg-amado {
+    background-color: $color-amado;
+    background-image: linear-gradient(to right, #FF416C, #ef3a47);
+}
+
+.bg-amado-blue {
+    background-color: $color-amado-blue;
+    background-image: linear-gradient(to right, $color-amado-blue 0%, #2433cc 100%);
+}
+
+.bg-login-card {
+    background: linear-gradient(to right, $pink-color, $color-amado);
+}
+
+.text-amado {
+    color: $color-amado!important;
+}
+
+.text-amado-blue {
+    color: $color-amado-blue!important;
+}
+
+.btn-amado {
+    background-image: linear-gradient(to right, #FF416C 0%, #ef3a47 51%, #FF416C 100%);
+    border-color: $color-amado;
+}
+
+.btn-amado-blue {
+    background-image: linear-gradient(to right, $color-amado-blue 0%, #2433cc 51%, $color-amado-blue 100%);
+    border-color: $color-amado-blue;
+}
+
+.btn-amado, .btn-amado-blue {
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+}
+
+.btn-amado:hover, .btn-amado-blue:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu-header {
+    margin-left: 1rem;
+    padding-top: 2em;
+    padding-bottom: 0.8em;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $graylte-color;
+}
+
+.box-login {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25),
+    0 10px 10px rgba(0,0,0,0.22);
+    border: none;
+    border-radius: 15px;
+}
+
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+.rounded-r {
+    border-radius: 0 15px 15px 0;
+}
+
+.hr-nav-administrator {
+    border-color: #ef3a47;
+    width: 90%;
+}
+
+.validate-ico {
+    font-size: 6rem;
+    color: #dedede;
+}
+
+.preview-imgitem {
+    height: 310px;
+    object-fit: contain;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .menu-header {
+        margin-left: 0rem;
+    }
+}
