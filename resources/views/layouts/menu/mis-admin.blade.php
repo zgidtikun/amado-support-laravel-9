@@ -14,15 +14,15 @@
         <span class="nav-link-text ml-2">ข้อมูลหลัก</span>
     </a>
     <ul class="sidenav-second-level collapse
-    @if(request()->is('admin/location') or request()->is('admin/type-asset*') 
+    @if(request()->is('admin/location') or request()->is('admin/asset-type*') 
     or request()->is('admin/department*') or request()->is('admin/employee*')
     ) show @endif"
     id="menu-a-mis-infosetup">
         <li class="{{ request()->is('admin/location*') ? 'active' : '' }}">
             <a href="{{url('admin/location')}}">จัดการข้อมูล Location</a>
         </li>    
-        <li class="{{ request()->is('admin/type-asset*') ? 'active' : '' }}">
-            <a href="{{url('admin/type-asset')}}">จัดการข้อมูลประเภททรัพย์สิน</a>
+        <li class="{{ request()->is('admin/asset-type*') ? 'active' : '' }}">
+            <a href="{{url('admin/asset-type')}}">จัดการข้อมูลประเภททรัพย์สิน</a>
         </li>    
         <li class="{{ request()->is('admin/department*') ? 'active' : '' }}">
             <a href="{{url('admin/department')}}">จัดการข้อมูลฝ่าย</a>

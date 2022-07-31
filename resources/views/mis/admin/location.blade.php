@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Location')
+@section('title','จัดการข้อมูล Location')
 @section('content')
 <ol class="breadcrumb bg-white">    
     <li class="breadcrumb-item">ข้อมูลหลัก</li>
@@ -52,14 +52,14 @@
                             <label for="uname">รหัส Location : </label>
                             <input type="text" class="form-control" placeholder="กรอกรหัส Location..."
                             id="locat_id" name="locat_id">                            
-                            <div id="lc_name_valid" class="valid-feedback"></div>
+                            <div id="lc_id_valid" class="valid-feedback">กรุณากรอกรหัส Location</div>
                         </div>
                         <div class="invalid-feedback">กรุณากรอกรหัส Location...!</div>
                         <div class="form-group col-md-8">
                             <label for="uname">คำอธิบาย Location : </label>
                             <input type="text" class="form-control" placeholder="กรอกคำอธิบาย Location..."
                             id="locat_name" name="locat_name">
-                            <div id="lc_name_valid" class="valid-feedback"></div>
+                            <div id="lc_name_valid" class="valid-feedback">กรุณากรอกคำอธิบาย Location</div>
                         </div>
                         <div class="invalid-feedback">กรุณากรอกคำอธิบาย Location...!</div>
                     </div>
@@ -81,5 +81,6 @@
         </div>
     </div>
 </div>
+@extends('layouts.progress')
 @endsection
 

@@ -17,11 +17,12 @@
     <link href="{{ asset('vendor/fontawesome/css/all.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
-    <script src="{{ asset('js/jquery.min.js') }}" defer></script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/jquery.dataTables.min.js') }}" defer></script>
-    <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}" defer></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">

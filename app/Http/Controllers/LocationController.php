@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Models\Location;
 
 class LocationController extends Controller
@@ -31,20 +32,33 @@ class LocationController extends Controller
     public function set_location(Request $request){
         switch($request->input('action')){
             case 'create': 
-                $result = Location::create([
-                   'it_locat_id' => $request->input('locat_id'),
-                   'it_locat_name' => $request->input('locat_name') 
-                ]);
+                try{
+                    $result = Location::insert([
+                        'it_locat_id' => $request->input('locat_id'),
+                        'it_locat_name' => $request->input('locat_name') 
+                    ]);
+                }
+                catch(QueryException $e){ $errormsg = $e->getMessage(); }
                 break;
-            case 'update': 
-                $result = Location::update(['it_locat_name' => $request->input('locat_name')])
-                    ->where('it_locat_id',$request->input('locat_id'));
+            case 'edit': 
+                try{
+                    $result = Location::where('it_locat_id',$request->input('locat_id'))
+                        ->update(['it_locat_name' => $request->input('locat_name')]);
+                }
+                catch(QueryException $e){ $errormsg = $e->getMessage(); }
                 break;
-            case 'delete':
-                $result = Location::where('it_locat_id',$request->input('locat_id'))
-                    ->delete();
+            case 'delete': 
+                try{
+                    $result = Location::where('it_locat_id',$request->input('locat_id'))
+                        ->delete();
+                }
+                catch(QueryException $e){ $errormsg = $e->getMessage(); }
                 break;
         }
-        return response()->json(array('status' => $result), 200);
+
+        return response()->json(array(
+            'status' => !empty($result) ? $result : false, 
+            'errorMsg' => !empty($errormsg) ? $errormsg : ''
+        ), 200);
     }
 }
