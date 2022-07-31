@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\AssetController;
+use App\http\Controllers\DepartmentController;
 
 Route::controller(loginController::class)->group(function(){
     Route::prefix('login')->group(function(){
@@ -50,6 +51,14 @@ Route::middleware(['auth','user-access:admin'])->group(function(){
                 Route::post('setup', 'set_assetty');
             });
         });
+
+        Route::controller(DepartmentController::class)->group(function(){
+            Route::prefix('department')->group(function(){
+                Route::get('/', 'index');
+                Route::get('all', 'get_all');
+                Route::post('setup', 'set_department');
+            });
+        });     
 
     }); 
 });

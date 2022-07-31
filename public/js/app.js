@@ -12,12 +12,9 @@ const defPage = {
     setDefaultPage: function(url){
         console.log(url);
         switch(url){
-            case '/admin/location': 
-                alocation.initDataTable();
-            break;
-            case '/admin/asset-type': 
-                aAssetType.initDataTable();
-            break;
+            case '/admin/location': alocation.initDataTable(); break;
+            case '/admin/asset-type': aAssetType.initDataTable(); break;
+            case '/admin/department': aDepartment.initDataTable(); break;
         }
     }
 };
@@ -34,6 +31,177 @@ const swalInit = {
         return swalWithBootstrapButtons;
     }
 }
+
+const aDepartment = {
+    form: {
+        action: 'insert',
+        dept_id: '',
+        dept_name: ''
+    },
+    initDataTable: function(){
+        let table = $('#tblDept').DataTable({
+            ajax: {
+                method: 'get',
+                url: 'department/all',
+                dataType: 'json',
+                dataSrc: ''
+            },
+            pageLength: 25,
+            procressing: true,
+            info: true,
+            lengthChange: true,
+            columns: [
+                { data: 'it_dept_id' },
+                { data: 'it_dept_name' },
+                {
+                    data: 'it_asstty_id', render: function(data, type, row, meta){
+                        let param = "'"+row.it_dept_id+"','"+row.it_dept_name+"'";
+                        let content = '<button type="button" class="btn btn-warning btn-sm mr-2"';
+                        content += 'onclick="aDepartment.action(\'update\','+param+')"><i class="fas fa-pen"></i></button>';
+                        content += '<button type="button" class="btn btn-danger btn-sm"';
+                        content += 'onclick="aDepartment.action(\'delete\','+param+')"><i class="fas fa-minus"></i></button>';
+                        return content;
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: 'text-center justify-content-center',
+                    searchable: false,
+                    orderable: false
+                },
+                { targets: 1, className: 'justify-content-center' },
+                {
+                    targets: 2,
+                    className: 'text-center',
+                    searchable: false,
+                    orderable: false
+                }
+            ],
+            order: [[1, 'asc']]
+        });
+
+        table.on('order.dt search.dt', function () {
+            let i = 1;
+    
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                this.data(i++);
+            });
+        }).draw();
+    },
+    action: function(action,id,name){  
+        this.form.action = action;
+        $('#dept_name').removeClass('is-valid');
+        $('#dept_name').removeClass('is-invalid');
+        if(action != 'delete'){
+            if(action == 'insert'){
+                this.form.dept_id = this.form.dept_name = '';
+                $('#dept_name').val('');
+                $('#modal-header-title').text('เพิ่มประเภททรัพย์สิน');
+            }
+            else{
+                this.form.dept_id = id;
+                this.form.dept_name = name;
+                $('#dept_name').val(name);
+                $('#modal-header-title').text('แก้ไขประเภททรัพย์สิน');
+            }
+            $('#modal-department').modal('show');
+        }
+        else{
+            this.form.dept_id = id
+            let swalWithBootstrapButtons = swalInit.initBootstrap();
+            swalWithBootstrapButtons.fire({
+                title: 'ยืนยันการลบข้อมูล',
+                text: "ต้องการลบ "+name+" หรือไม่",
+                showCancelButton: true,
+                confirmButtonText: 'ลบข้อมูล',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if(result.isConfirmed)
+                    this.actuate();
+            });
+        }
+    },
+    actuate: function(){
+        
+        if(this.form.action != 'delete')
+            if(!this.valid())
+                return;
+
+        let swalWithBootstrapButtons = swalInit.initBootstrap();
+        let postData = { action: this.form.action };
+
+        if(this.form.action == 'update'){
+            postData.dept_id = this.form.dept_id;
+            postData.dept_name = $('#dept_name').val();
+        }
+        else if(this.form.action == 'insert')
+            postData.dept_name = $('#dept_name').val();
+        else postData.dept_id = this.form.dept_id;
+
+        if(this.form.action != 'delete')
+            $('#modal-department').modal('hide');
+
+        $('#modal-progress').modal('show');
+
+        $.ajax({
+            method: 'post',
+            url: 'department/setup',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            dataType: 'json',
+            data: postData,
+            success: function(response){       
+                $('#modal-progress').modal('hide');
+                if(response.status){                 
+                    let text = (postData.action == 'delete' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'บันทึกข้อมูลเรียบร้อยแล้ว');
+                    swalWithBootstrapButtons.fire({ 
+                        icon: 'success', 
+                        title: text,
+                        confirmButtonText: 'ตกลง'
+                    }).then((result) => {
+                        $('#tblDept').DataTable().ajax.reload();
+                    });
+                }
+                else{
+                    let text = (postData.action == 'delete' ? 'ไม่สามารถลบข้อมูลได้' : 'ไม่สามารถบันทึกข้อมูลได้');
+                    swalWithBootstrapButtons.fire({ 
+                        icon: 'error', 
+                        title: text, 
+                        text: 'Error : '+response.message ,
+                        confirmButtonText: 'ตกลง'
+                    }).then((result) => {                            
+                        $('#modal-assettype').modal('show');
+                    });
+                }
+            },
+            error: function(jqXhr, textStatus, errorMessage){
+                $('#modal-progress').modal('hide');
+                let text = (postData.action == 'delete' ? 'ไม่สามารถลบข้อมูลได้' : 'ไม่สามารถบันทึกข้อมูลได้');
+                swalWithBootstrapButtons.fire({ 
+                    icon: 'error', 
+                    title: text, 
+                    text: 'Error : '+errorMessage,
+                    confirmButtonText: 'ตกลง'
+                }).then((result) => {                            
+                    $('#modal-location').modal('show');
+                });
+            }
+        });
+    },
+    valid: function(){
+        if($('#dept_name').val() == ''){
+            $('#dept_name').removeClass('is-valid');
+            $('#dept_name').addClass('is-invalid');
+            return false
+        }
+        else{
+            $('#dept_name').removeClass('is-invalid');
+            $('#dept_name').addClass('is-valid');
+            return true;
+        }
+    }
+};
 
 const aAssetType = {
     form: {
@@ -95,6 +263,8 @@ const aAssetType = {
     },
     action: function(action,id,name){  
         this.form.action = action;
+        $('#asstty_name').removeClass('is-valid');
+        $('#asstty_name').removeClass('is-invalid');
         if(action != 'delete'){
             if(action == 'insert'){
                 this.form.asstty_id = this.form.asstty_name = '';
