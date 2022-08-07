@@ -36,6 +36,17 @@ const swalInit = {
             buttonsStyling: false
         });
         return swalWithBootstrapButtons;
+    },
+    alert: function(setting){
+        let swalWithBootstrapButtons = this.initBootstrap();
+        swalWithBootstrapButtons.fire({ 
+            icon: setting.icon, 
+            title: setting.title, 
+            text: setting.text,
+            confirmButtonText: 'ตกลง'
+        }).then((result) => {  
+            return true;
+        });
     }
 }
 
@@ -43,65 +54,61 @@ const operator = {
     returnResponse: {},
     baseUrl: window.location.origin,
     resetPassword: function(user){
+        $('#modal-progress').modal('show');
 
         let dataPost = { username: user },
             link = this.baseUrl+'/reset-password',
-            responseMsg;
+            response, responseMsg;
 
-        let response = this.execute(link,dataPost);
-        let swalWithBootstrapButtons = swalInit.initBootstrap();
-        console.log(response);
-        if(!jQuery.isEmptyObject(response)){
-            if(response.result == 'success')          
-                responseMsg = 'Reset Password Complete.';
-            else if(response.result == 'error') 
-                responseMsg = 'Reset Password Fail!';
+        this.execute(link,dataPost).then(function(data) {
+            response = data;            
+            if(response.result == 'success') responseMsg = 'Reset Password Complete.';
+            else if(response.result == 'error') responseMsg = 'Reset Password Fail!';
 
-            swalWithBootstrapButtons.fire({ 
-                icon: response.result, 
-                title: responseMsg, 
-                text: response.message,
-                confirmButtonText: 'ตกลง'
-            }).then((result) => {  
-                $('#modal-progress').modal('hide');  
-                if(response.result == 'success')    
-                    $('#tblDept').DataTable().ajax.reload();  
-                else                  
-                    $('#modal-location').modal('show');
-            });
-        }
+            let setting_alert = {
+                icon: response.result,
+                title: responseMsg,
+                text: response.message
+            }
 
+            if(swalInit.alert(setting_alert)){
+                $('#modal-progress').modal('hide');
+            }
+
+        });
     },
     getDetail: function(link,dataPost){
 
     },
     execute: function(link,dataPost){
-        $.ajax({
-            method: 'post',
-            url: link,
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            dataType: 'json',
-            data: dataPost,
-            async: true,
-            success: function(response){       
-                if(response.status){ 
-                    this.returnResponse = { result: 'success' };
-                }
-                else{
-                    this.returnResponse = {
-                        result: 'error',
-                        message: 'response.message'
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                method: 'post',
+                url: link,
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                data: dataPost,
+                async: true,
+                success: function(response){       
+                    if(response.status){ 
+                        resolve({ result: 'success' });
                     }
+                    else{
+                        resolve({
+                            result: 'error',
+                            message: 'response.message'
+                        });
+                    }
+                },
+                error: function(jqXhr, textStatus, errorMessage){
+                    resolve(this.returnResponse = {
+                        result: 'error',
+                        message: 'Error : '+errorMessage
+                    });
                 }
-            },
-            error: function(jqXhr, textStatus, errorMessage){
-                this.returnResponse = {
-                    result: 'error',
-                    message: 'Error : '+errorMessage
-                }
-            }
+            });
+        
         });
-        return this.returnResponse;
     }
 }
 
@@ -308,8 +315,7 @@ const aDepartment = {
         if(this.form.action != 'delete')
             if(!this.valid())
                 return;
-
-        let swalWithBootstrapButtons = swalInit.initBootstrap();
+                
         let postData = { action: this.form.action };
 
         if(this.form.action == 'update'){
@@ -326,25 +332,27 @@ const aDepartment = {
         $('#modal-progress').modal('show');         
         let response,
             responseMsg;
-        
-        response = operator.execute('department/setup',postData);
 
-        if(response.result == 'success')          
-            responseMsg = (postData.action == 'delete' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'บันทึกข้อมูลเรียบร้อยแล้ว');
-        else if(response.result == 'error') 
-            responseMsg = (postData.action == 'delete' ? 'ไม่สามารถลบข้อมูลได้' : 'ไม่สามารถบันทึกข้อมูลได้');
+        operator.execute('department/setup',postData).then(function(data) {
+            response = data;            
+            if(response.result == 'success') 
+                responseMsg = (postData.action == 'delete' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            else if(response.result == 'error') 
+                responseMsg = (postData.action == 'delete' ? 'ไม่สามารถลบข้อมูลได้' : 'ไม่สามารถบันทึกข้อมูลได้');
 
-        swalWithBootstrapButtons.fire({ 
-            icon: response.result, 
-            title: responseMsg, 
-            text: response.message,
-            confirmButtonText: 'ตกลง'
-        }).then((result) => {  
-            $('#modal-progress').modal('hide');  
-            if(response.result == 'success')    
-                $('#tblDept').DataTable().ajax.reload();  
-            else                  
-                $('#modal-location').modal('show');
+            let setting_alert = {
+                icon: response.result,
+                title: responseMsg,
+                text: response.message
+            }
+
+            if(swalInit.alert(setting_alert)){
+                $('#modal-progress').modal('hide');  
+                if(response.result == 'success') 
+                    $('#tblDept').DataTable().ajax.reload();  
+                else $('#modal-location').modal('show');
+            }
+
         });
 
     },
@@ -475,26 +483,28 @@ const aAssetType = {
 
         $('#modal-progress').modal('show');
         let response,
-            responseMsg;
-        
-        response = operator.execute('asset-type/setup',postData);
+            responseMsg;        
 
-        if(response.result == 'success')          
-            responseMsg = (postData.action == 'delete' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'บันทึกข้อมูลเรียบร้อยแล้ว');
-        else if(response.result == 'error') 
-            responseMsg = (postData.action == 'delete' ? 'ไม่สามารถลบข้อมูลได้' : 'ไม่สามารถบันทึกข้อมูลได้');
+        operator.execute('asset-type/setup',postData).then(function(data) {
+            response = data;            
+            if(response.result == 'success') 
+                responseMsg = (postData.action == 'delete' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'บันทึกข้อมูลเรียบร้อยแล้ว');
+            else if(response.result == 'error') 
+                responseMsg = (postData.action == 'delete' ? 'ไม่สามารถลบข้อมูลได้' : 'ไม่สามารถบันทึกข้อมูลได้');
 
-        swalWithBootstrapButtons.fire({ 
-            icon: response.result, 
-            title: responseMsg, 
-            text: response.message,
-            confirmButtonText: 'ตกลง'
-        }).then((result) => {  
-            $('#modal-progress').modal('hide');  
-            if(response.result == 'success')    
-                $('#tblAsstty').DataTable().ajax.reload();  
-            else                  
-                $('#modal-assettype').modal('show');
+            let setting_alert = {
+                icon: response.result,
+                title: responseMsg,
+                text: response.message
+            }
+
+            if(swalInit.alert(setting_alert)){
+                $('#modal-progress').modal('hide');  
+                if(response.result == 'success') 
+                    $('#tblAsstty').DataTable().ajax.reload();  
+                else $('#modal-assettype').modal('show');
+            }
+
         });
         
     },
@@ -607,22 +617,25 @@ const alocation = {
                 locat_id: $('#locat_id').val(),
                 locat_name: $('#locat_name').val()
             }
-        
-            response = operator.execute('location/setup',postData);
-            responseMsg = (response.result == 'success' ? 'บันทึกข้อมูลเรียบร้อยแล้ว' : 'ไม่สามารถบันทึกข้อมูลได้');
 
-            swalWithBootstrapButtons.fire({ 
-                icon: response.result, 
-                title: responseMsg, 
-                text: response.message,
-                confirmButtonText: 'ตกลง'
-            }).then((result) => {  
-                $('#modal-progress').modal('hide');  
-                if(response.result == 'success')    
-                    $('#tblLocat').DataTable().ajax.reload();  
-                else                  
-                    $('#modal-location').modal('show');
-            });          
+            operator.execute('location/setup',postData).then(function(data) {
+                response = data;            
+                responseMsg = (response.result == 'success' ? 'บันทึกข้อมูลเรียบร้อยแล้ว' : 'ไม่สามารถบันทึกข้อมูลได้');
+    
+                let setting_alert = {
+                    icon: response.result,
+                    title: responseMsg,
+                    text: response.message
+                }
+    
+                if(swalInit.alert(setting_alert)){
+                    $('#modal-progress').modal('hide');  
+                    if(response.result == 'success') 
+                        $('#tblLocat').DataTable().ajax.reload();  
+                    else $('#modal-location').modal('show');
+                }
+    
+            });        
         }
     },
     delete: function(id){   
@@ -643,21 +656,24 @@ const alocation = {
                     action: 'delete',
                     locat_id: id
                 }
-            
-                response = operator.execute('location/setup',postData);
-                responseMsg = (response.result == 'success' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'ไม่สามารถลบข้อมูลได้');
-    
-                swalWithBootstrapButtons.fire({ 
-                    icon: response.result, 
-                    title: responseMsg, 
-                    text: response.message,
-                    confirmButtonText: 'ตกลง'
-                }).then((result) => {  
-                    $('#modal-progress').modal('hide');  
-                    if(response.result == 'success')    
-                        $('#tblLocat').DataTable().ajax.reload();  
-                    else                  
-                        $('#modal-location').modal('show');
+
+                operator.execute('location/setup',postData).then(function(data) {
+                    response = data;            
+                    responseMsg = (response.result == 'success' ? 'ลบข้อมูลเรียบร้อยแล้ว' : 'ไม่สามารถลบข้อมูลได้');
+        
+                    let setting_alert = {
+                        icon: response.result,
+                        title: responseMsg,
+                        text: response.message
+                    }
+        
+                    if(swalInit.alert(setting_alert)){
+                        $('#modal-progress').modal('hide');  
+                        if(response.result == 'success') 
+                            $('#tblLocat').DataTable().ajax.reload();  
+                        else $('#modal-location').modal('show');
+                    }
+        
                 });
             }
         })
