@@ -45,6 +45,7 @@
             </div>
             <div class="modal-body">
                 <form action="">
+                    @csrf
                     <div class="row justify-content-md-center m-3 pb-3">
                         <div class="form-group col-md-6">
                             <label for="uname">ชื่อฝ่าย : </label>

@@ -16,9 +16,11 @@ class DepartmentController extends Controller
         return view('mis.admin.department');
     }
 
-    public function get_all(){
+    public function get_all($request = 'post'){
         $data = Department::all();
-        return response()->json($data, 200);
+        if($request == 'post')
+            return response()->json($data, 200);
+        else return $data;
     }
 
     public function set_department(Request $request){

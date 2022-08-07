@@ -39,5 +39,20 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'rule' => $data['rule'],
         ]);
+    }    
+
+    public function reset_password(Request $request)
+    {
+        try{
+            $result = User::where('username',$request->input('username'))
+                ->update([ 'password' => Hash::make('Amado.1234') ]);
+        }
+        catch(QueryException $e){ $errormsg = $e->getMessage(); }
+
+        return response()->json([
+            'status' => isset($result) ? $result  : false,
+            'message' => isset($errormsg) ? $errormsg : ''
+        ], 200);
+
     }
 }

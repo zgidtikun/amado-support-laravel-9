@@ -7,6 +7,7 @@
         <span class="nav-link-text ml-2">หน้าหลัก</span>
     </a>
 </li>
+{{-- Menu : ข้อมูลหลัก --}}
 <li class="nav-item" data-toggle="tooltip" data-placement="right">
     <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" 
     id="menu-a-mis-main"  href="javascript:;" data-parent="#menu-nav">
@@ -30,5 +31,26 @@
         <li class="{{ request()->is('admin/employee*') ? 'active' : '' }}">
             <a href="{{url('admin/employee')}}">จัดการข้อมูลพนักงาน</a>
         </li>        
+    </ul>
+</li>
+{{-- Menu : ทรัพย์สิน --}}
+<li class="nav-item" data-toggle="tooltip" data-placement="right">
+    <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" 
+    id="menu-a-mis-asset" href="javascript:;" data-parent="#menu-nav">
+        <i class="fas fa-archive"></i>
+        <span class="nav-link-text ml-2">ทรัพย์สิน</span>
+    </a>
+    <ul class="sidenav-second-level collapse
+    @if(request()->is('admin/asset*') || request()->is('admin/paper/asset') || request()->is('admin/sofware-license*')) show @endif"
+    id="menu-a-mis-asset-setup">
+        <li class="{{ request()->is('admin/asset*') ? 'active' : '' }}">
+            <a href="{{url('admin/asset')}}">จัดการข้อมูลทรัพย์สิน</a>
+        </li>
+        <li class="{{ request()->is('admin/paper/asset') ? 'active' : '' }}">
+            <a href="{{url('admin/paper/asset')}}">ค้นหาเอกสารทรัพย์สิน</a>
+        </li>
+        <li class="{{ request()->is('admin/sofware-license*') ? 'active' : '' }}">
+            <a href="{{url('admin/sofware-license')}}">Software License Control</a>
+        </li>
     </ul>
 </li>

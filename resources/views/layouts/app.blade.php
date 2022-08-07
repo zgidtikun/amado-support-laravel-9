@@ -43,7 +43,7 @@
                 <li class="nav-item my-auto">
                     <span class="text-dark">
                     @if(Auth::user()->username)
-                        <i class="fas fa-user text-amado-blue mr-2"></i> {{ Auth::user()->username }}
+                        <i class="fas fa-user text-amado-blue mr-2"></i> {{ Auth::user()->name }}
                     @else
                         No Session was announced.
                     @endif

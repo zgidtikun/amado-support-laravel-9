@@ -19,6 +19,8 @@ return new class extends Migration
             $table->timestamp('username_verified_at')->nullable();
             $table->string('password');
             $table->string('rule');
+            $table->string('name',100);
+            $table->string('it_emp_id',10);
             $table->rememberToken();
             $table->timestamps();
         });
