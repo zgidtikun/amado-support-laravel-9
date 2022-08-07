@@ -51,6 +51,14 @@ Route::middleware(['auth','user-access:admin'])->group(function(){
         }); 
 
         Route::controller(AssetController::class)->group(function(){
+            Route::prefix('asset')->group(function(){
+                Route::get('/', 'index');
+                Route::get('all', 'get_asset_all');
+                Route::get('create', 'index_asset_create');
+                Route::get('detail/{id}', 'index_asset_detail');
+                Route::post('setup', 'setup_asset');
+            });
+
             Route::prefix('asset-type')->group(function(){
                 Route::get('/', 'index_asset_type');
                 Route::get('all', 'get_asstty_all');

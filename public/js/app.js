@@ -2,6 +2,10 @@
 
 $(document).ready(function(){
     defPage.setDefaultPage(window.location.pathname);   
+
+    $('.datepicker').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
     
     $('#menu-a-mis-main').click(function(){
         $('#menu-a-mis-infosetup').toggleClass('show');
@@ -14,14 +18,17 @@ $(document).ready(function(){
 const defPage = {
     mainPage: [
         '/admin/location', '/admin/asset-type', '/admin/department', '/admin/employee',
+        '/admin/asset'
     ],
     setDefaultPage: function(url){
         console.log(url);
         switch(url){
-            case '/admin/location': alocation.initDataTable(); break;
+            case '/admin/asset': aAsset.initDataTable(); break;
             case '/admin/asset-type': aAssetType.initDataTable(); break;
             case '/admin/department': aDepartment.initDataTable(); break;
             case '/admin/employee': aEmployee.initDataTable(); break;
+            case '/admin/location': alocation.initDataTable(); break;
+            default: break;
         }
     },
 };
@@ -109,6 +116,70 @@ const operator = {
             });
         
         });
+    }
+}
+
+const aAsset = {
+    initDataTable: function(){
+        let table = $('#tblAsst').DataTable({
+            ajax: {
+                method: 'get',
+                url: 'asset/all',
+                dataType: 'json',
+                dataSrc: ''
+            },
+            pageLength: 25,
+            procressing: true,
+            info: true,
+            lengthChange: true,
+            columns: [
+                { data: 'no' },
+                { data: 'it_asst_number' },
+                { data: 'it_asstty_name' },
+                { data: 'it_asst_name' },
+                { data: 'it_asst_serial' },
+                { data: 'it_asst_status' },
+                { data: 'it_asst_group' },
+                { 
+                    data: 'it_asst_id', render: function(data, type, row, meta){
+                        let link = operator.baseUrl+'/admin/asset/'+data;
+                        let content = '<a type="button" class="btn btn-primary btn-sm"';
+                        content += 'href="'+link+'"><i class="fas fa-file-alt"></i>';
+                        content += '<span class="ml-2">รายละเอียด</span></a>';
+                        return content;
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    className: 'justify-content-center',
+                    searchable: false,
+                    orderable: false
+                },
+                { targets: 1, className: 'justify-content-center' },
+                { targets: 2, className: 'justify-content-center' },
+                { targets: 3, className: 'justify-content-center' },
+                { targets: 4, className: 'justify-content-center' },
+                { targets: 5, className: 'justify-content-center' },
+                { targets: 6, className: 'justify-content-center' },
+                { 
+                    targets: 7, 
+                    className: 'text-center',
+                    searchable: false,
+                    orderable: false 
+                }
+            ],
+            order: [[1, 'asc']]
+        });
+
+        table.on('order.dt search.dt', function () {
+            let i = 1;
+    
+            table.cells(null, 0, { search: 'applied', order: 'applied' }).every(function (cell) {
+                this.data(i++);
+            });
+        }).draw();
     }
 }
 
@@ -466,8 +537,7 @@ const aAssetType = {
         if(this.form.action != 'delete')
             if(!this.valid())
                 return;
-
-        let swalWithBootstrapButtons = swalInit.initBootstrap();
+                
         let postData = { action: this.form.action };
 
         if(this.form.action == 'update'){
@@ -607,7 +677,6 @@ const alocation = {
         if(this.valid()){
             $('#modal-location').modal('hide');
             $('#modal-progress').modal('show');
-            let swalWithBootstrapButtons = swalInit.initBootstrap();
 
             let response,
             responseMsg;

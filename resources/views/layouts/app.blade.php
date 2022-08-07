@@ -14,6 +14,7 @@
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app-custom.css') }}" rel="stylesheet">
     <link href="{{ asset('css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/fontawesome/css/all.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
@@ -23,6 +24,8 @@
     <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet">
@@ -35,7 +38,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav navbar-sidenav scrollbar-custom bg-white" id="menu-nav">
+                @if(Auth::user()->rule == 'admin')
                 @include('layouts.menu.mis-admin')
+                @elseif(Auth::user()->rule == 'user')
+                @endif
             </ul>
             
             <ul class="navbar-nav ml-auto">
