@@ -39,7 +39,25 @@ class AssetController extends Controller
     }
 
     public function index_asset_detail($id){
+
+        $detail = DB::table('it_asset as ia')
+            ->select('ia.it_asst_name','ia.it_asst_status','ia.it_asstty_id',
+            'ia.it_asst_group','ia.it_asst_serial','ia.it_asst_price','ia.it_asst_expired',
+            'ia.it_asst_warrantry','ia.it_asst_remark','iat.it_asstty_name')
+            ->join('it_asset_type as iat','ia.it_asstty_id','iat.it_asstty_id')
+            ->where('ia.it_asst_id',$id)
+            ->first();
         
+        $type = AssetType::all();
+       
+        $data = array(
+            'asst_id' => $id,
+            'detail' => $detail,
+            'types' => $type,
+        );
+        
+        return view('mis.admin.asset-detail',$data);
+
     }
 
     public function setup_asset(Request $request){
@@ -78,7 +96,7 @@ class AssetController extends Controller
                     if(!empty($request->input('asset_warrantry')))
                         $data['it_asst_warrantry'] = $request->input('asset_warrantry');
 
-                    $result = AssetType::create($data);
+                    $result = Asset::create($data);
                     $asst_id = $result->id;
                 }
                 catch(QueryException $e){ $errormsg = $e->getMessage(); }
@@ -109,15 +127,15 @@ class AssetController extends Controller
                     if(!empty($request->input('asset_warrantry')))
                         $data['it_asst_warrantry'] = $request->input('asset_warrantry');
 
-                    $result = AssetType::where('it_asst_id',$asst_id)
+                    $result = Asset::where('it_asst_id',$asst_id)
                         ->update($data);
                 }
                 catch(QueryException $e){ $errormsg = $e->getMessage(); }
             break;
         }
 
-        if($result)
-            return redirect('admin/asset/update/'.$asst_id);
+        if(!empty($result))
+            return redirect('admin/asset/detail/'.$asst_id);
         else
             return redirect()->back()->with('executeFail', $errormsg);
 

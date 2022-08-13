@@ -146,7 +146,7 @@
         Swal.fire({ 
             icon: 'error', 
             title: 'ไม่สามารถบันทึกข้อมูลได้', 
-            text: '{!! \Session::get('loginFail') !!}',
+            text: "{!! \Session::get('executeFail') !!}",
             confirmButtonText: 'ตกลง'
         });
         @endif

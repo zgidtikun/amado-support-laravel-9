@@ -120,6 +120,7 @@ const operator = {
 }
 
 const aAsset = {
+    assetDetail: null,
     initDataTable: function(){
         let table = $('#tblAsst').DataTable({
             ajax: {
@@ -142,7 +143,7 @@ const aAsset = {
                 { data: 'it_asst_group' },
                 { 
                     data: 'it_asst_id', render: function(data, type, row, meta){
-                        let link = operator.baseUrl+'/admin/asset/'+data;
+                        let link = operator.baseUrl+'/admin/asset/detail/'+data;
                         let content = '<a type="button" class="btn btn-primary btn-sm"';
                         content += 'href="'+link+'"><i class="fas fa-file-alt"></i>';
                         content += '<span class="ml-2">รายละเอียด</span></a>';
@@ -180,6 +181,21 @@ const aAsset = {
                 this.data(i++);
             });
         }).draw();
+    },
+    setDataAssetDetail: function(data){
+        this.assetDetail = data;
+    },
+    defaultPageDetail: function(){
+        $('#btnAssetSetUpdate').hide();
+        $('#btnAssetSetCancel').hide();
+        $('#assetName').hide();
+        $('#assetStatus').hide();
+        $('#assetType').hide();
+        $('#assetGroup').hide();
+        $('#assetSerial').hide();
+        $('#assetPrice').hide();
+        $('#assetExpire').hide();
+        $('#assetWarrantry').hide();
     }
 }
 
