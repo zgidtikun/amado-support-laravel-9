@@ -62,15 +62,20 @@ class AssetController extends Controller
 
     public function setup_asset(Request $request){
 
-        $request->validate([
-            'action' => 'required',
-            'asset_number' => 'required|regex:/^[0-9a-zA-Z]+$/u',
-            'asset_type' => 'required',
-            'asset_group' => 'required',
-            'asset_name' => 'required|regex:/^[0-9a-zA-Zก-เ -.\/]+$/u',
-            'asset_price' => 'required|numeric|min:1',
-            'asset_status' => 'required',
-        ]);
+        if($request->input('action') == 'create'){
+            $request->validate([
+                'action' => 'required',
+                'asset_number' => 'required|regex:/^[0-9a-zA-Z]+$/u',
+                'asset_type' => 'required',
+                'asset_group' => 'required',
+                'asset_name' => 'required|regex:/^[0-9a-zA-Zก-เ -.\/]+$/u',
+                'asset_price' => 'required|numeric|min:1',
+                'asset_status' => 'required',
+            ]);
+        }
+        elseif($request->input('action') == 'create'){
+
+        }
 
         switch($request->input('action')){
             case 'create':

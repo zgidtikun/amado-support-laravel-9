@@ -185,17 +185,50 @@ const aAsset = {
     setDataAssetDetail: function(data){
         this.assetDetail = data;
     },
-    defaultPageDetail: function(){
-        $('#btnAssetSetUpdate').hide();
-        $('#btnAssetSetCancel').hide();
-        $('#assetName').hide();
-        $('#assetStatus').hide();
-        $('#assetType').hide();
-        $('#assetGroup').hide();
-        $('#assetSerial').hide();
-        $('#assetPrice').hide();
-        $('#assetExpire').hide();
-        $('#assetWarrantry').hide();
+    defaultPageDetail: function(method){
+
+        let listId = {
+            input: [
+                'assetName','assetStatus','assetType','assetGroup','assetRemark',
+                'assetSerial','assetPrice','assetExpire','assetWarrantry'
+            ],
+            label: [
+                'showAssetName','showAssetStatus','showAssetType','showAssetGroup','showAssetRemark',
+                'showAssetSerial','showAssetPrice','showAssetExpire','showAssetWarrantry'
+            ]
+        }
+
+        switch(method){
+            case 'default':
+            case 'cancle':
+                $('#btnAssetSetDataUpdate').show();
+                $('#btnAssetSetUpdate').hide();
+                $('#btnAssetSetCancel').hide();
+
+                $.each(listId.input, function(key,value){ $('#'+value).hide(); });
+                $.each(listId.label, function(key,value){ $('#'+value).show(); });
+            break;
+            case 'update': 
+                $('#btnAssetSetDataUpdate').hide();
+                $('#btnAssetSetUpdate').show();
+                $('#btnAssetSetCancel').show();
+
+                $.each(listId.input, function(key,value){ $('#'+value).show(); });
+                $.each(listId.label, function(key,value){ $('#'+value).hide(); });
+                
+                $('#assetName').val(this.assetDetail.asset_name);
+                $('#assetStatus').val(this.assetDetail.asset_status);
+                $('#assetType').val(this.assetDetail.asset_type);
+                $('#assetGroup').val(this.assetDetail.asset_group);
+                $('#assetSerial').val(this.assetDetail.asset_serial);
+                $('#assetPrice').val(this.assetDetail.asset_price);
+                $('#assetExpire').val(this.assetDetail.asset_expired);
+                $('#assetWarrantry').val(this.assetDetail.asset_warrantry);
+                $('#assetRemark').val(this.assetDetail.asset_remark);
+            break;
+        }
+    },
+    setDetailUpdate: function(){
     }
 }
 

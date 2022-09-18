@@ -23,15 +23,15 @@
                         <div class="col-6"><h5>รายละเอียดทรัพย์สิน</h5></div>
                         <div class="col-6">
                             <button type="button" class="btn btn-sm btn-warning float-right"
-                            >
+                            id="btnAssetSetDataUpdate" onclick="aAsset.defaultPageDetail('update')">
                                 <i class="fas fa-pen"></i> <span class="ml-2">แก้ไขข้อมูลทรัพย์สิน</span>
                             </button>
                             <button type="button" class="btn btn-sm btn-danger float-right mr-2"
-                            id="btnAssetSetCancel">
+                            id="btnAssetSetCancel" onclick="aAsset.defaultPageDetail('cancle')">
                                 <i class="fas fa-ban"></i> <span class="ml-2">ยกเลิก</span>
                             </button>
                             <button type="button" class="btn btn-sm btn-success float-right mr-2"
-                            id="btnAssetSetUpdate">
+                            id="btnAssetSetUpdate" onclick="aAsset.setDetailUpdate()">
                                 <i class="fas fa-save"></i> <span class="ml-2">บันทึก</span>
                             </button>
                         </div>
@@ -121,6 +121,15 @@
                                 id="assetWarrantry" value="{{$detail->it_asst_warrantry}}">
                             </p>
                         </div>
+                        <div class="col-12">
+                            <p class="mb-1">
+                                <span class="mr-2">หมายเหตุ :</span>
+                                <span id="showAssetRemark" >{{$detail->it_asst_remark}}</span>
+                                <textarea class="form-control form-control-sm" rows="5" placeholder="กรอกหมายเหตุ..."
+                                id="assetRemark" value="{{$detail->it_asst_remark}}">
+                                </textarea>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,12 +141,16 @@
         aAsset.setDataAssetDetail({
             asset_id: {{$asst_id}},
             asset_name: '{{$detail->it_asst_id}}',
+            asset_type: '{{$detail->it_asstty_id}}',
             asset_status: '{{$detail->it_asst_status}}',
             asset_group: '{{$detail->it_asst_group}}',
             asset_serial: '{{$detail->it_asst_serial}}',
-            
+            asset_price: '{{$detail->it_asst_price}}',
+            asset_expired: '{{$detail->it_asst_expired}}',
+            asset_warrantry: '{{$detail->it_asst_warrantry}}',
+            asset_remark: '{{$detail->it_asst_remark}}',
         });
-        aAsset.defaultPageDetail();
+        aAsset.defaultPageDetail('defalut');
     });
 </script>
 @extends('layouts.progress')
